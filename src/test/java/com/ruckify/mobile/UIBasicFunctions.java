@@ -7,6 +7,7 @@ package com.ruckify.mobile;
  */
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import org.testng.Reporter;
 
@@ -152,7 +153,8 @@ public class UIBasicFunctions {
 		if (flag) {
 			appiumDB.refreshPage();
 			Thread.sleep(5000);
-			appiumDB.tapElementByXPath(LoginPageLocators.SEARCH_ICON);
+			//appiumDB.tapElementByXPath(LoginPageLocators.SEARCH_ICON);
+			appiumDB.doubleTap("search ");
 			flag = appiumDB.waitElementByXPath(HomePageLocators.SEARCH_TXT);
 			if (flag) {
 				appiumDB.sendTextByXPath(HomePageLocators.SEARCH_TXT, HomePageLocators.SEARCH_ITEM);
@@ -276,7 +278,7 @@ public class UIBasicFunctions {
 			return newPath;
 		else if (checkStatus.equals("true") && validateDate.equals("enddate")) {
 			Thread.sleep(2000);
-			newPath = appiumDB.getModifiedDatePath(path, 0);
+			newPath = appiumDB.getModifiedDatePath(path, 0, false);
 		} else {
 			if (validateDate.equals("startdate"))
 				newPath = appiumDB.nextAvailableDate(path, "enabled");
@@ -401,20 +403,23 @@ public class UIBasicFunctions {
 	 */
 	public boolean logout() throws IOException, InterruptedException{
 		appiumDB.tapElementByXPath(LoginPageLocators.MANAGE_TAB);
-		flag = appiumDB.waitElementByXPath(HomePageLocators.MY_INVENTORY_BTN);
-		if(flag) {
-			appiumDB.scrollDownWithValue(250, 1100);
-			Thread.sleep(12000);
-			appiumDB.scrollDownWithValue(250, 1600);
+		Thread.sleep(3000);
+		appiumDB.scrollDownWithValue(250, 1100);
+		Thread.sleep(3000);
+		appiumDB.scrollDownWithValue(250, 1600);
+		Thread.sleep(12000);
+		appiumDB.refreshPage();
+		flag = appiumDB.waitElementByXPath(HomePageLocators.SIGNOUT_BTN);
+		if(!flag) {
 			appiumDB.refreshPage();
 			flag = appiumDB.waitElementByXPath(HomePageLocators.SIGNOUT_BTN);
+		}
+		if(flag) {
+			appiumDB.clickBtnByXPath(HomePageLocators.SIGNOUT_BTN);
+			flag = appiumDB.waitElementByXPath(HomePageLocators.OKAY_BTN);
 			if(flag) {
-				appiumDB.clickBtnByXPath(HomePageLocators.SIGNOUT_BTN);
-				flag = appiumDB.waitElementByXPath(HomePageLocators.OKAY_BTN);
-				if(flag) {
-					appiumDB.clickBtnByXPath(HomePageLocators.OKAY_BTN);
-					flag = appiumDB.waitElementByXPath(HomePageLocators.SEARCH_ICON);
-				}
+				appiumDB.clickBtnByXPath(HomePageLocators.OKAY_BTN);
+				flag = appiumDB.waitElementByXPath(HomePageLocators.SEARCH_ICON);
 			}
 		}
 		return flag;

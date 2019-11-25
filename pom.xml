@@ -28,7 +28,7 @@
   			<configuration>
        			<testFailureIgnore>false</testFailureIgnore>
          		<suiteXmlFiles>
-					<suiteXmlFile>Ruckify.xml</suiteXmlFile>
+					<suiteXmlFile>${suiteName}.xml</suiteXmlFile>
 				</suiteXmlFiles>
         	</configuration>
       	</plugin>

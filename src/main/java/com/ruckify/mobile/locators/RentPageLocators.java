@@ -29,7 +29,9 @@ public class RentPageLocators {
 	/** XPATH **/	public static final String ADD_NOTE_TXT = "//android.view.View[@content-desc='add note']";
 	/** XPATH **/	public static final String OKAY_BTN = "//android.widget.Button[@content-desc='Okay ']";
 	
-	 /** XPATH **/    public static final String ITINERARY_TXT ="//android.view.View[@content-desc='itinerary']";
+	/** XPATH **/    public static final String ITINERARY_TXT ="//android.view.View[@content-desc='itinerary']";
 	/** XPATH **/    public static final String ARROW_BACK_BTN = "//android.widget.Button[@content-desc='arrow back ']";
+
+	/** XPATH **/    public static final String NEXT_MONTH_BTN = "	//android.widget.Button[@content-desc='Next Month']";
 		
 }

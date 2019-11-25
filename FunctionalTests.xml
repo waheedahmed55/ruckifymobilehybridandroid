@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<suite name = "Ruckify Mobile Functional Test cases" parallel="false">
+  <test name = "Functional Test">
+      <classes>
+          <class name = "com.ruckify.mobile.FunctionalTest" />         
+      </classes>
+   </test> 
+</suite>

@@ -50,8 +50,12 @@ public class FunctionalTest {
 		flag = uibasicfunctions.searchAProduct();
 		if (flag) {
 			flag = uibasicfunctions.rentAProduct("nextDay");
-			if (flag)
+			if (flag) {
 				flag = uibasicfunctions.checkoutAProduct();
+				if (flag) {
+					flag = uibasicfunctions.logout();
+				}
+			}
 		}
 		Assert.assertTrue(flag);
 	}

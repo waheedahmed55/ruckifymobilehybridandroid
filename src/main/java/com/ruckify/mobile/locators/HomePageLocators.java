@@ -30,6 +30,7 @@ public class HomePageLocators {
 	/** XPATH **/	public static final String SIGNIN_BTN_POP_UP= "//android.widget.Button[@content-desc='Sign In ']";
 	/** XPATH **/	public static final String MY_PROFILE_BTN	= "//android.view.View[@content-desc='my profile']";
 	///** XPATH **/	public static final String HOME_TAB 		= "//android.view.View[@resource-id='tab-t0-0']";
+	/** XPATH **/	public static final String EDIT_PROFILE_BTN = "//android.view.View[@content-desc='edit & verify profile']";
 	
 	//Search Text
 	public static final String SEARCH_ITEM 						= "Monitor";

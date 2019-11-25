@@ -33,6 +33,8 @@ import org.testng.Reporter;
 import org.testng.asserts.Assertion;
 import org.testng.asserts.SoftAssert;
 
+import com.ruckify.mobile.locators.RentPageLocators;
+
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
@@ -60,6 +62,16 @@ public class AppiumDriverBase {
 		final File appDir = new File("C:\\Automation\\Appium\\ruckify.mobile\\App");
 		final File app = new File(appDir, "RC-oct-22 3-0-9.apk");
 
+		Runtime runtime = Runtime.getRuntime();
+		try {
+			// runtime.exec("cmd.exe /c start cmd.exe /k \"taskkill /PID 4723 /F");
+			runtime.exec(
+					"cmd.exe /c start cmd.exe /k \"appium -a 127.0.0.1 -p 4732 --session-override -dc \"{\"\"noReset\"\": \"\"false\"\"}\"\"");
+			Thread.sleep(10000);
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		/**
 		 * Desired capability
 		 */
@@ -88,7 +100,7 @@ public class AppiumDriverBase {
 				 */
 				
 				// Initializing driver object
-				driver = new AndroidDriver(new URL("http://0.0.0.0:4723/wd/hub"), caps);
+				driver = new AndroidDriver(new URL("http://127.0.0.1:4732/wd/hub"), caps);
 
 				if (((AndroidDriver) driver).isDeviceLocked()) {
 					((AndroidDriver) driver).unlockDevice();
@@ -106,7 +118,7 @@ public class AppiumDriverBase {
 				caps.setCapability("automationName", "UiAutomator2");
 
 				// Initializing driver object
-				driver = new IOSDriver(new URL("http://127.0.0.1:4723/wd/hub"), caps);
+				driver = new IOSDriver(new URL("http://127.0.0.1:4728/wd/hub"), caps);
 			}
 
 			this.wait = new WebDriverWait(this.driver, 30);
@@ -254,6 +266,15 @@ public class AppiumDriverBase {
 	        driver.perform(Arrays.asList(tap));
 	        Thread.sleep(4000);
 	    }
+	   public void longPress() throws InterruptedException {
+	       
+	        Thread.sleep(5000);
+	        driver.findElementByAccessibilityId("sign out").click();
+	        MobileElement longpress = (MobileElement) new WebDriverWait(driver, 30).
+	                until(ExpectedConditions.elementToBeClickable(MobileBy.AccessibilityId("sign out")));
+	        new Actions(driver).clickAndHold(longpress).perform();
+	        Thread.sleep(5000);
+	    }
 	/**
 	 * Tap an element by ID
 	 * 
@@ -397,15 +418,19 @@ public class AppiumDriverBase {
 	public String nextAvailableDate(String path, String attribute) throws IOException, InterruptedException {
 		String newPath = null;
 		boolean flag = false;
+		int j;
+		flag = checkDate();
 		try {
 			for (int i = 0; i < 10; i++) {
-				newPath = getModifiedDatePath(path, i + 1);
+				if(flag) j=6;
+				else j=i;
+				newPath = getModifiedDatePath(path, j + 1, flag);
 				String checkEnabled = getAttribute(newPath, attribute);
 				System.out.println("Path: " + newPath + "Status: " + checkEnabled);
 				if (checkEnabled.equals("true") && attribute.equals("enabled"))
 					break;
 				else if (checkEnabled.equals("true") && attribute.equals("selected")) {
-					newPath = getModifiedDatePath(path, i + 2);
+					newPath = getModifiedDatePath(path, j + 2, flag);
 					break;
 				} else
 					continue;
@@ -416,19 +441,37 @@ public class AppiumDriverBase {
 		}
 		return newPath;
 	}
+	
+	private boolean checkDate() throws IOException {
+		boolean flag = false;
+		LocalDate date = LocalDate.now();
+		String newPath = null;
+		int date1 = date.getDayOfMonth();
+		if(date1 >= 25) {
+			flag = waitElementByXPath(RentPageLocators.NEXT_MONTH_BTN);
+			if(flag)
+				tapElementByXPath(RentPageLocators.NEXT_MONTH_BTN);
+		}
+		return flag;
+	}
 
 	/**
 	 * Get attribute of an element by xpath
 	 * 
 	 * @param path
 	 * @param i    - nth element
+	 * @throws IOException 
 	 */
-	public String getModifiedDatePath(String path, int i) {
+	public String getModifiedDatePath(String path, int i, boolean flag) throws IOException {
 		LocalDate date = LocalDate.now();
 		String newPath = null;
+		String month = null;
 		int date1 = date.plusDays(i + 1).getDayOfMonth();
 		String day = date.plusDays(i + 1).getDayOfWeek().toString();
-		String month = date.getMonth().toString();
+		if(flag)
+			month = date.plusMonths(1).getMonth().toString();
+		else
+			month = date.getMonth().toString();
 		String formattedDate = WordUtils.capitalizeFully(day) + ", " + WordUtils.capitalizeFully(month) + " " + date1
 				+ " ";
 		newPath = path + "'" + formattedDate + "']";
@@ -580,5 +623,23 @@ public class AppiumDriverBase {
 	 */
 	public void teardown() {
 		driver.quit();
+	}
+	
+	/**
+	 * Stop the Apppium Server Session
+	 */
+	public void stopServer() {
+		Runtime runtime = Runtime.getRuntime();
+		try {
+			runtime.exec("cmd /c echo off & FOR /F \"usebackq tokens=5\" %a in"
+					  + " (`netstat -nao ^| findstr /R /C:\"4732 \"`) do (FOR /F \"usebackq\" %b in"
+					  + " (`TASKLIST /FI \"PID eq %a\" ^| findstr /I node.exe`) do taskkill /F /PID %a)");
+			runtime.exec("taskkill /F /IM node.exe");
+			runtime.exec("taskkill /F /IM cmd.exe");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// service.stop();
+		Reporter.log("Stop Appium Server...");
 	}
 }

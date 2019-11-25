@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<suite name = "Ruckify Mobile Smoke Testcases" parallel="false">
+   <test name = "Smoke Test">
+      <classes>
+          <class name = "com.ruckify.mobile.SmokeTest" />         
+      </classes>
+   </test>
+</suite>
