@@ -32,10 +32,13 @@ public class FunctionalTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void LoginAndroid() throws InterruptedException, IOException {
+	public void VerifyLoginWithValidCredential() throws InterruptedException, IOException {
 		flag = uibasicfunctions.gotoLoginPage("new");
-		if (flag)
+		if (flag) {
 			flag = uibasicfunctions.login();
+			if(flag)
+				appiumDB.log("---Test Case: Verify Login With Valid Credential, is passed---");
+		}
 		Assert.assertTrue(flag);
 	}
 
@@ -46,7 +49,7 @@ public class FunctionalTest {
 	 * @throws IOException
 	 */
 	@Test(dependsOnMethods = "LoginAndroid")
-	public void SearchAndRent() throws InterruptedException, IOException {
+	public void VerifySearchAndRentForNextday() throws InterruptedException, IOException {
 		flag = uibasicfunctions.searchAProduct();
 		if (flag) {
 			flag = uibasicfunctions.rentAProduct("nextDay");
@@ -54,14 +57,17 @@ public class FunctionalTest {
 				flag = uibasicfunctions.checkoutAProduct();
 				if (flag) {
 					flag = uibasicfunctions.logout();
+					if(flag)
+						appiumDB.log("---Test Case: Verify Search And Rent For Next day, is passed---");
 				}
 			}
 		}
 		Assert.assertTrue(flag);
 	}
 
-	@AfterClass
-	public void teardown() {
+	@AfterClass(alwaysRun = true)
+	public void teardown() throws InterruptedException {
 		appiumDB.teardown();
+		appiumDB.stopServer();
 	}
 }

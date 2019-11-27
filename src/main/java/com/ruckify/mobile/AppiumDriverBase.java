@@ -1,5 +1,7 @@
 package com.ruckify.mobile;
 
+import java.io.BufferedReader;
+
 /**
  * @author Waheed Ahmed
  * @company Ruckify
@@ -8,6 +10,7 @@ package com.ruckify.mobile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -418,19 +421,19 @@ public class AppiumDriverBase {
 	public String nextAvailableDate(String path, String attribute) throws IOException, InterruptedException {
 		String newPath = null;
 		boolean flag = false;
-		int j;
-		flag = checkDate();
+		int j = 0;
+		j = checkDate();
 		try {
 			for (int i = 0; i < 10; i++) {
-				if(flag) j=6;
-				else j=i;
-				newPath = getModifiedDatePath(path, j + 1, flag);
+				if(j!=0) flag = true;
+				else flag = false;
+				newPath = getModifiedDatePath(path, j + i, flag);
 				String checkEnabled = getAttribute(newPath, attribute);
 				System.out.println("Path: " + newPath + "Status: " + checkEnabled);
 				if (checkEnabled.equals("true") && attribute.equals("enabled"))
 					break;
 				else if (checkEnabled.equals("true") && attribute.equals("selected")) {
-					newPath = getModifiedDatePath(path, j + 2, flag);
+					newPath = getModifiedDatePath(path, j + i + 1, flag);
 					break;
 				} else
 					continue;
@@ -442,17 +445,20 @@ public class AppiumDriverBase {
 		return newPath;
 	}
 	
-	private boolean checkDate() throws IOException {
+	public int checkDate() throws IOException, InterruptedException {
 		boolean flag = false;
+		int difference = 0;
 		LocalDate date = LocalDate.now();
-		String newPath = null;
 		int date1 = date.getDayOfMonth();
 		if(date1 >= 25) {
+			difference = 31 - date1;
 			flag = waitElementByXPath(RentPageLocators.NEXT_MONTH_BTN);
 			if(flag)
 				tapElementByXPath(RentPageLocators.NEXT_MONTH_BTN);
+			Thread.sleep(5000);
+			refreshPage();
 		}
-		return flag;
+		return difference;
 	}
 
 	/**
@@ -536,8 +542,7 @@ public class AppiumDriverBase {
 	 */
 	public void clickFollowingSibling(String path) {
 		try {
-			driver.findElement(By.xpath(path + "/following-sibling::*"));
-
+			driver.findElement(By.xpath(path + "/following-sibling::*")).click();
 		} catch (Exception e) {
 			Reporter.log("Unable to click the next element: " + path);
 		}
@@ -617,29 +622,37 @@ public class AppiumDriverBase {
 			getScreenshot("ScrollByValue");
 		}
 	}
+	
+	/**
+	 * Print in TestNG report and in the console log
+	 * @param string
+	 */
+	public void log(String string) {
+		Reporter.log(string+"<br>");
+		System.out.println(string);
+	}
 
 	/**
 	 * Quit the driver session
 	 */
 	public void teardown() {
 		driver.quit();
+		
 	}
 	
 	/**
 	 * Stop the Apppium Server Session
+	 * @throws InterruptedException 
 	 */
-	public void stopServer() {
+	public void stopServer() throws InterruptedException {
 		Runtime runtime = Runtime.getRuntime();
 		try {
-			runtime.exec("cmd /c echo off & FOR /F \"usebackq tokens=5\" %a in"
-					  + " (`netstat -nao ^| findstr /R /C:\"4732 \"`) do (FOR /F \"usebackq\" %b in"
-					  + " (`TASKLIST /FI \"PID eq %a\" ^| findstr /I node.exe`) do taskkill /F /PID %a)");
 			runtime.exec("taskkill /F /IM node.exe");
 			runtime.exec("taskkill /F /IM cmd.exe");
+			Thread.sleep(10000);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// service.stop();
 		Reporter.log("Stop Appium Server...");
 	}
 }

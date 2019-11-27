@@ -34,6 +34,8 @@ public class SmokeTest {
 	@Test(priority = 1)
 	public void VerifyRentalAndPostItemPage() throws InterruptedException, IOException {
 		flag = uibasicfunctions.verifyRentalPage();
+		if(flag)
+			appiumDB.log("---Test Case: Verify Rental And Post ItemPage, is passed---");
 		Assert.assertTrue(flag);
 	}
 
@@ -44,10 +46,12 @@ public class SmokeTest {
 	 * @throws IOException
 	 */
 	@Test(priority = 2)
-	public void verifyHomePage() throws InterruptedException, IOException {
+	public void VerifyHomePage() throws InterruptedException, IOException {
 		flag = uibasicfunctions.verifyHomePage();
 		if (flag) {
 			flag = uibasicfunctions.logout();
+			if(flag)
+				appiumDB.log("---Test Case: Verify HomePage, is passed---");
 		}
 		Assert.assertTrue(flag);
 	}
@@ -69,6 +73,8 @@ public class SmokeTest {
 					flag = uibasicfunctions.checkoutAProduct();
 					if (flag) {
 						flag = uibasicfunctions.logout();
+						if(flag)
+							appiumDB.log("---Test Case: Verify Renting A Product For SameDay, is passed---");
 					}
 				}
 			}
@@ -76,8 +82,9 @@ public class SmokeTest {
 		Assert.assertTrue(flag);
 	}
 
-	@AfterClass
-	public void teardown() {
+	@AfterClass(alwaysRun = true)
+	public void teardown() throws InterruptedException {
 		appiumDB.teardown();
+		appiumDB.stopServer();
 	}
 }

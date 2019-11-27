@@ -7,10 +7,6 @@ package com.ruckify.mobile;
  */
 
 import java.io.IOException;
-import java.time.LocalDate;
-
-import org.testng.Reporter;
-
 import com.ruckify.mobile.locators.*;
 
 public class UIBasicFunctions {
@@ -67,7 +63,7 @@ public class UIBasicFunctions {
 				appiumDB.clickBtnByXPath(LoginPageLocators.LOGIN_BTN);
 				flag = appiumDB.waitElementByXPath(LoginPageLocators.SEARCH_ICON);
 				if (flag)
-					Reporter.log("Successfully logged into the website");
+					appiumDB.log("Successfully logged into the website");
 			}
 		}
 		return flag;
@@ -86,7 +82,7 @@ public class UIBasicFunctions {
 			appiumDB.tapElementByXPath(HomePageLocators.RENTING_TAB);
 			flag = appiumDB.waitElementByXPath(HomePageLocators.SIGNIN_BTN_POP_UP);
 			if (flag)
-				Reporter.log("Verified sign in button while clicking the Renting tab without logging in to the app"+"<br>");
+				appiumDB.log("Verified sign in button while clicking the Renting tab without logging in to the app");
 			if(flag) {
 				appiumDB.tapElementByXPath(HomePageLocators.SIGNIN_BTN_POP_UP);
 				flag = login();
@@ -109,29 +105,29 @@ public class UIBasicFunctions {
 				appiumDB.tapElementByXPath(HomePageLocators.MESSAGE_TAB);
 				flag = appiumDB.waitElementByXPath(HomePageLocators.SIGNIN_BTN_POP_UP);
 				if (flag)
-					Reporter.log("Verified sign in button while clicking the message tab without logging in to the app"+"<br>");
+					appiumDB.log("Verified sign in button while clicking the message tab without logging in to the app");
 				if(flag) {
 					appiumDB.tapElementByXPath(HomePageLocators.SIGNIN_BTN_POP_UP);
 					flag = login();
 					if (flag)
-						Reporter.log("Logged in to the app from homepage"+ "<br>");
+						appiumDB.log("Logged in to the app from homepage");
 					Thread.sleep(2000);
 					appiumDB.tapElementByXPath(HomePageLocators.MESSAGE_TAB);
 					if(flag) {
 						flag = appiumDB.waitElementByXPath(HomePageLocators.MESSAGE_PAGE_TXT) && 
 								appiumDB.waitElementByXPath(HomePageLocators.RENTING_TAB);
 						if(flag) {
-							Reporter.log("Verified Renting tab in homepage"+"<br>");
+							appiumDB.log("Verified Renting tab in homepage");
 							appiumDB.tapElementByXPath(HomePageLocators.RENTING_TAB);
 							flag = appiumDB.waitElementByXPath(HomePageLocators.REQUEST_TAB) &&
 									appiumDB.waitElementByXPath(HomePageLocators.POSTING_TAB);
 							if(flag) {
-								Reporter.log("Verified Posting tab in homepage"+"<br>");
+								appiumDB.log("Verified Posting tab in homepage");
 								appiumDB.tapElementByXPath(HomePageLocators.POSTING_TAB);
 								flag = appiumDB.waitElementByXPath(HomePageLocators.TIMEZONE_TXT) &&
 										appiumDB.waitElementByXPath(LoginPageLocators.MANAGE_TAB);
 								if (flag)
-									Reporter.log("Verified manage tab in homepage");
+									appiumDB.log("Verified manage tab in homepage");
 							}
 						}
 					}
@@ -167,7 +163,7 @@ public class UIBasicFunctions {
 					Thread.sleep(5000);
 					flag = appiumDB.waitElementByXPath(RentPageLocators.RENT_NOW_BTN);
 					if (flag)
-						Reporter.log("Searched a product and gone to the Rent page");
+						appiumDB.log("Searched a product and gone to the Rent page");
 				}
 			}
 		}
@@ -192,7 +188,7 @@ public class UIBasicFunctions {
 				appiumDB.tapElementByXPath(RentPageLocators.START_DATE_CAL);
 				flag = setDateAndTime(RentPageLocators.SET_DATE, day);
 				if (flag)
-					Reporter.log("Searched a product and gone to the searched product page");
+					appiumDB.log("Searched a product and gone to the searched product page");
 			}
 		}
 		return flag;
@@ -228,7 +224,13 @@ public class UIBasicFunctions {
 						}
 					}
 					else if(day.equals("nextDay")) {
-						newPath = setDate("enddate", path, day);
+						/*
+						 * flag = appiumDB.waitElementByXPath(RentPageLocators.PREVIOUS_MONTH_BTN);
+						 * if(flag) appiumDB.tapElementByXPath(RentPageLocators.PREVIOUS_MONTH_BTN);
+						 * newPath = setDate("enddate", path, day);
+						 */
+						appiumDB.clickFollowingSibling(newPath);
+						Thread.sleep(5000);
 						timePath  = setTime("enddate", newPath, day);
 					}
 					System.out.println(timePath);
@@ -245,7 +247,7 @@ public class UIBasicFunctions {
 								appiumDB.tapElementByXPath(RentPageLocators.SET_DATES_BTN);
 								flag = appiumDB.waitElementByXPath(RentPageLocators.CHECKOUT_BTN);
 								if (flag)
-									Reporter.log("Successfully assigned the start and end dates");
+									appiumDB.log("Successfully assigned the start and end dates");
 							}
 						}
 					}
@@ -367,17 +369,17 @@ public class UIBasicFunctions {
 			flag = appiumDB.waitElementByXPath(HomePageLocators.RENT_BTN) &&
 					appiumDB.waitElementByXPath(HomePageLocators.POST_BTN);
 			if (flag)
-				Reporter.log("Verified the Rental market and post button in Homepage"+"<br>");
+				appiumDB.log("Verified the Rental market and post button in Homepage");
 			if(flag) {
 				appiumDB.clickBtnByXPath(HomePageLocators.POST_BTN);
 				flag = appiumDB.waitElementByXPath(HomePageLocators.SIGN_IN_BTN);
 				if (flag)
-					Reporter.log("Verified sign in button in Post page"+"<br>");
+					appiumDB.log("Verified sign in button in Post page");
 				if(flag) {
 					appiumDB.scrollDownWithValue(250, 1200);
 					flag = appiumDB.waitElementByXPath(HomePageLocators.SIGN_UP_BTN);
 					if (flag)
-						Reporter.log("Verified sign up button in Post page"+"<br>");
+						appiumDB.log("Verified sign up button in Post page");
 					if(flag) {
 						appiumDB.scrollUpWithValue(250, 1200);
 						flag = appiumDB.waitElementByXPath(HomePageLocators.RENT_BTN);
@@ -385,7 +387,7 @@ public class UIBasicFunctions {
 							appiumDB.clickBtnByXPath(HomePageLocators.RENT_BTN);
 							flag = appiumDB.waitElementByXPath(HomePageLocators.SEARCH_ICON);
 							if (flag)
-								Reporter.log("Verified rental market buuton and came back to homepage"+"<br>");
+								appiumDB.log("Verified rental market buuton and came back to homepage");
 						}
 					}
 				}
@@ -403,19 +405,37 @@ public class UIBasicFunctions {
 	 */
 	public boolean logout() throws IOException, InterruptedException{
 		appiumDB.tapElementByXPath(LoginPageLocators.MANAGE_TAB);
-		Thread.sleep(3000);
+		Thread.sleep(6000);
 		appiumDB.scrollDownWithValue(250, 1100);
 		Thread.sleep(3000);
 		appiumDB.scrollDownWithValue(250, 1600);
-		Thread.sleep(12000);
+		Thread.sleep(13000);
 		appiumDB.refreshPage();
+		//appiumDB.longPress();
 		flag = appiumDB.waitElementByXPath(HomePageLocators.SIGNOUT_BTN);
 		if(!flag) {
 			appiumDB.refreshPage();
+			
 			flag = appiumDB.waitElementByXPath(HomePageLocators.SIGNOUT_BTN);
+			
+			if(!flag) {
+				appiumDB.refreshPage();
+				
+				flag = appiumDB.waitElementByXPath(HomePageLocators.SIGNOUT_BTN);
+				
+				if(!flag) {
+					appiumDB.refreshPage();
+				
+					flag = appiumDB.waitElementByXPath(HomePageLocators.SIGNOUT_BTN);
+					appiumDB.refreshPage();
+				}
+				
+			}
 		}
 		if(flag) {
-			appiumDB.clickBtnByXPath(HomePageLocators.SIGNOUT_BTN);
+			//appiumDB.doubleTap("sign out");
+			//appiumDB.clickBtnByXPath(HomePageLocators.SIGNOUT_BTN);
+			appiumDB.tapElementByXPath(HomePageLocators.SIGNOUT_BTN);
 			flag = appiumDB.waitElementByXPath(HomePageLocators.OKAY_BTN);
 			if(flag) {
 				appiumDB.clickBtnByXPath(HomePageLocators.OKAY_BTN);
