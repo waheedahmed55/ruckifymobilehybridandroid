@@ -66,7 +66,7 @@ public class SmokeTest {
 	public void VerifyRentingAProductForSameDay() throws InterruptedException, IOException {
 		flag = uibasicfunctions.verifyLoginFromRentingTab();
 		if (flag) {
-			flag = uibasicfunctions.searchAProduct();
+			flag = uibasicfunctions.searchAProduct(false);
 			if (flag) {
 				flag = uibasicfunctions.rentAProduct("sameDay");
 				if (flag) {
@@ -85,6 +85,6 @@ public class SmokeTest {
 	@AfterClass(alwaysRun = true)
 	public void teardown() throws InterruptedException {
 		appiumDB.teardown();
-		appiumDB.stopServer();
+		//appiumDB.stopServer();
 	}
 }

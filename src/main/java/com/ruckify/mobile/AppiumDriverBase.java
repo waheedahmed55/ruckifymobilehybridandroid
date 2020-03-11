@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
@@ -58,23 +59,24 @@ public class AppiumDriverBase {
 	private Assertion hardAssert;
 	protected WebDriverWait wait;
 	String platformName = System.getProperty("platformName");
+	String formattedDate = null;
+	int difference = 0;
 
 	public AppiumDriverBase() {
 
 		// relative path to apk file
 		final File appDir = new File("C:\\Automation\\Appium\\ruckify.mobile\\App");
-		final File app = new File(appDir, "RC-oct-22 3-0-9.apk");
+		final File app = new File(appDir, "RC 3-0-18 (7) 32bit.apk");
 
-		Runtime runtime = Runtime.getRuntime();
-		try {
-			// runtime.exec("cmd.exe /c start cmd.exe /k \"taskkill /PID 4723 /F");
-			runtime.exec(
-					"cmd.exe /c start cmd.exe /k \"appium -a 127.0.0.1 -p 4732 --session-override -dc \"{\"\"noReset\"\": \"\"false\"\"}\"\"");
-			Thread.sleep(10000);
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-		
+		/*
+		 * Runtime runtime = Runtime.getRuntime(); try { //
+		 * runtime.exec("cmd.exe /c start cmd.exe /k \"taskkill /PID 4723 /F");
+		 * runtime.exec(
+		 * "cmd.exe /c start cmd.exe /k \"appium -a 127.0.0.1 -p 4732 --session-override -dc \"{\"\"noReset\"\": \"\"false\"\"}\"\""
+		 * ); Thread.sleep(10000); } catch (IOException | InterruptedException e) {
+		 * e.printStackTrace(); }
+		 */
+
 		/**
 		 * Desired capability
 		 */
@@ -83,27 +85,35 @@ public class AppiumDriverBase {
 			if (platformName.equals("Android")) {
 
 				caps.setCapability("platform", platformName);
-	            caps.setCapability("platformVersion", "7.0");
-	            caps.setCapability("deviceName", "02157df29091da1d");
-	            caps.setCapability("app", app.getAbsolutePath());
-	            caps.setCapability("clearSystemFiles", true);
-	    		caps.setCapability("newCommandTimeout", 30);
-	    		caps.setCapability("automationName", "UiAutomator2");
-	    		caps.setCapability("fullReset", true);
+				caps.setCapability("platformVersion", "7.0");
+				caps.setCapability("deviceName", "02157df29091da1d");
+				caps.setCapability("app", app.getAbsolutePath());
+				caps.setCapability("clearSystemFiles", true);
+				caps.setCapability("newCommandTimeout", 30);
+				caps.setCapability("automationName", "UiAutomator2");
+				caps.setCapability("fullReset", true);
 
 				/*
-				  caps.setCapability("platform", platformName);
-				  caps.setCapability("platformVersion", "9.0");
-				  caps.setCapability("deviceName", "4b4a31335a383498");
-				  caps.setCapability("app", app.getAbsolutePath());
-				  caps.setCapability("clearSystemFiles", true);
-				  caps.setCapability("newCommandTimeout", 30);
-				  caps.setCapability("automationName", "UiAutomator2");
-				  caps.setCapability("fullReset", true);
+				 * caps.setCapability("platform", platformName);
+				 * caps.setCapability("platformVersion", "9.0");
+				 * caps.setCapability("deviceName", "4b4a31335a383498");
+				 * caps.setCapability("app", app.getAbsolutePath());
+				 * caps.setCapability("clearSystemFiles", true);
+				 * caps.setCapability("newCommandTimeout", 30);
+				 * caps.setCapability("automationName", "UiAutomator2");
+				 * caps.setCapability("fullReset", true);
+				 * 
+				 * caps.setCapability("platform", platformName);
+				 * caps.setCapability("platformVersion", "9.0");
+				 * caps.setCapability("deviceName", "Galaxy MI A3"); caps.setCapability("app",
+				 * app.getAbsolutePath()); caps.setCapability("clearSystemFiles", true);
+				 * caps.setCapability("newCommandTimeout", 30);
+				 * caps.setCapability("automationName", "UiAutomator2");
+				 * caps.setCapability("fullReset", true);
 				 */
-				
+
 				// Initializing driver object
-				driver = new AndroidDriver(new URL("http://127.0.0.1:4732/wd/hub"), caps);
+				driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), caps);
 
 				if (((AndroidDriver) driver).isDeviceLocked()) {
 					((AndroidDriver) driver).unlockDevice();
@@ -247,37 +257,56 @@ public class AppiumDriverBase {
 		}
 	}
 
-	   public void doubleTap(String locator) throws InterruptedException {
-	       
-	        Thread.sleep(5000);
-	        //driver.findElementByAccessibilityId(ele).click();
-	        MobileElement element = (MobileElement) new WebDriverWait(driver, 30).
-	                until(ExpectedConditions.elementToBeClickable(MobileBy.AccessibilityId(locator)));
-	        Thread.sleep(1000);
-	        Point source = element.getCenter();
-	        PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH,"finger1");
-	        Sequence tap = new Sequence(finger, 1);
-	        tap.addAction(finger.createPointerMove(Duration.ofMillis(0),
-	                PointerInput.Origin.viewport(), source.x, source.y));
-	        tap.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
-	        tap.addAction(new Pause(finger, Duration.ofMillis(200)));
-	        tap.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
-	        tap.addAction(new Pause(finger, Duration.ofMillis(40)));
-	        tap.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
-	        tap.addAction(new Pause(finger, Duration.ofMillis(200)));
-	        tap.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
-	        driver.perform(Arrays.asList(tap));
-	        Thread.sleep(4000);
-	    }
-	   public void longPress() throws InterruptedException {
-	       
-	        Thread.sleep(5000);
-	        driver.findElementByAccessibilityId("sign out").click();
-	        MobileElement longpress = (MobileElement) new WebDriverWait(driver, 30).
-	                until(ExpectedConditions.elementToBeClickable(MobileBy.AccessibilityId("sign out")));
-	        new Actions(driver).clickAndHold(longpress).perform();
-	        Thread.sleep(5000);
-	    }
+	public void doubleTap(String locator) throws InterruptedException {
+		Thread.sleep(2000);
+		// driver.findElementByAccessibilityId(ele).click();
+		MobileElement element = (MobileElement) new WebDriverWait(driver, 30)
+				.until(ExpectedConditions.elementToBeClickable(MobileBy.AccessibilityId(locator)));
+		Thread.sleep(1000);
+		Point source = element.getCenter();
+		PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger1");
+		Sequence tap = new Sequence(finger, 1);
+		tap.addAction(
+				finger.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.viewport(), source.x, source.y));
+		tap.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
+		tap.addAction(new Pause(finger, Duration.ofMillis(200)));
+		tap.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
+		tap.addAction(new Pause(finger, Duration.ofMillis(40)));
+		tap.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
+		tap.addAction(new Pause(finger, Duration.ofMillis(200)));
+		tap.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
+		driver.perform(Arrays.asList(tap));
+		Thread.sleep(2000);
+	}
+
+	public void singleTap(String locator) throws InterruptedException {
+		Thread.sleep(2000);
+		// driver.findElementByAccessibilityId(ele).click();
+		MobileElement element = (MobileElement) new WebDriverWait(driver, 30)
+				.until(ExpectedConditions.elementToBeClickable(MobileBy.AccessibilityId(locator)));
+		Thread.sleep(1000);
+		Point source = element.getCenter();
+		PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger1");
+		Sequence tap = new Sequence(finger, 1);
+		tap.addAction(
+				finger.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.viewport(), source.x, source.y));
+		tap.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
+		tap.addAction(new Pause(finger, Duration.ofMillis(200)));
+		tap.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
+		driver.perform(Arrays.asList(tap));
+		Thread.sleep(2000);
+	}
+
+	public void longPress() throws InterruptedException {
+
+		Thread.sleep(5000);
+		driver.findElementByAccessibilityId("sign out").click();
+		MobileElement longpress = (MobileElement) new WebDriverWait(driver, 30)
+				.until(ExpectedConditions.elementToBeClickable(MobileBy.AccessibilityId("sign out")));
+		new Actions(driver).clickAndHold(longpress).perform();
+		Thread.sleep(5000);
+	}
+
 	/**
 	 * Tap an element by ID
 	 * 
@@ -312,6 +341,17 @@ public class AppiumDriverBase {
 	}
 
 	/**
+	 * Tap By Coordinates By Locating Nearby Element
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public void tapByCoordinates(int x, int y) {
+		TouchAction touchAction = new TouchAction(driver);
+		touchAction.tap(PointOption.point(x, y)).perform();
+	}
+
+	/**
 	 * Press back button
 	 */
 	public void backButton() {
@@ -320,27 +360,32 @@ public class AppiumDriverBase {
 
 	/**
 	 * Press enter button
+	 * 
+	 * @throws InterruptedException
 	 */
-	public void enterButton() {
+	public void enterButton() throws InterruptedException {
 		((AndroidDriver) driver).pressKey(new KeyEvent(AndroidKey.ENTER));
+		Thread.sleep(1500);
 	}
-	
+
 	/**
 	 * Refresh the page content
 	 */
 	public void refreshPage() {
 		driver.getPageSource();
 	}
-	
+
 	/**
-	 * Generates Username and append time stamp (yyyyMMddHHmmss) with it for signup purpose
-	 * @return username 
+	 * Generates Username and append time stamp (yyyyMMddHHmmss) with it for signup
+	 * purpose
+	 * 
+	 * @return username
 	 */
 	public String generateUsername() {
-		String username = "test"+new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())+"@ruckify.com";
-		//System.out.println(username);
+		String username = "test" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "@ruckify.com";
+		// System.out.println(username);
 		return username;
-	}	
+	}
 
 	/**
 	 * Press hide keyboard
@@ -357,7 +402,11 @@ public class AppiumDriverBase {
 	 */
 	public void getScreenshot(String name) throws IOException {
 		String date = getDate();
-		name = name.replace("'", " ");
+		name = name.replace("'", "");
+		name = name.replace(" ", "");
+		name = name.replace("\"", "");
+		name = name.replace("[", "");
+		name = name.replace("]", "");
 		name += "_" + date;
 		File scrFile = ((TakesScreenshot) this.driver).getScreenshotAs(OutputType.FILE);
 		File newFile = null;
@@ -401,14 +450,25 @@ public class AppiumDriverBase {
 
 	/**
 	 * Get the current date to build the xpath
+	 * 
+	 * @throws InterruptedException
+	 * @throws IOException
 	 */
-	public String getCurrentDate() {
+	public String getCurrentDate(Integer headsupCount) throws IOException, InterruptedException {
 		LocalDate date = LocalDate.now();
-		String day = date.getDayOfWeek().toString();
-		int date1 = date.getDayOfMonth();
+		int i = headsupCount / 24;
+		difference = checkDate(headsupCount);
+		int date1 = date.plusDays(i + difference).getDayOfMonth();
+		String day = date.plusDays(i + difference).getDayOfWeek().toString();
 		String month = date.getMonth().toString();
-		String formatedDate = "Today" + ", " + WordUtils.capitalizeFully(day) + ", " + ""
-				+ WordUtils.capitalizeFully(month) + " " + date1 + " ";
+		String formatedDate = null;
+		if (i > 0) {
+			if (difference > 0)
+				month = date.plusMonths(1).getMonth().toString();
+			formatedDate = WordUtils.capitalizeFully(day) + ", " + WordUtils.capitalizeFully(month) + " " + date1 + " ";
+		} else
+			formatedDate = "Today" + ", " + WordUtils.capitalizeFully(day) + ", " + ""
+					+ WordUtils.capitalizeFully(month) + " " + date1 + " ";
 		return formatedDate;
 	}
 
@@ -418,23 +478,43 @@ public class AppiumDriverBase {
 	 * @param path
 	 * @param attribute - enabled/selected
 	 */
-	public String nextAvailableDate(String path, String attribute) throws IOException, InterruptedException {
+	public String nextAvailableDate(String path, String attribute, Integer headsupCount, String day)
+			throws IOException, InterruptedException {
 		String newPath = null;
 		boolean flag = false;
-		int j = 0;
-		j = checkDate();
+		String checkEnabled = null;
 		try {
 			for (int i = 0; i < 10; i++) {
-				if(j!=0) flag = true;
-				else flag = false;
-				newPath = getModifiedDatePath(path, j + i, flag);
-				String checkEnabled = getAttribute(newPath, attribute);
-				System.out.println("Path: " + newPath + "Status: " + checkEnabled);
+				if (difference > 0)
+					flag = true;
+				else
+					flag = false;
+				if (day.equals("startdate")) {
+					newPath = getModifiedDatePath(path, difference + i, flag, headsupCount);
+					checkEnabled = getAttribute(newPath, attribute);
+					System.out.println("Path: " + newPath + "Status: " + checkEnabled);
+				} else if (day.equals("enddate"))
+					checkEnabled = getAttribute(path, attribute);
 				if (checkEnabled.equals("true") && attribute.equals("enabled"))
 					break;
 				else if (checkEnabled.equals("true") && attribute.equals("selected")) {
-					newPath = getModifiedDatePath(path, j + i + 1, flag);
-					break;
+					if (difference > 0)
+						flag = true;
+					newPath = getModifiedDatePath(RentPageLocators.SET_DATE, difference + i + 1, flag, headsupCount);
+					checkEnabled = getAttribute(newPath, "enabled");
+					if (checkEnabled.equals("true"))
+						break;
+					else {
+						for(int k= 2; k < 10; k++) {
+						newPath = getModifiedDatePath(path, difference + i + k, flag, headsupCount);
+						checkEnabled = getAttribute(newPath, "enabled");
+						if (checkEnabled.equals("true"))
+							break;
+						else
+							continue;
+						}
+						break;
+					}
 				} else
 					continue;
 			}
@@ -444,19 +524,27 @@ public class AppiumDriverBase {
 		}
 		return newPath;
 	}
-	
-	public int checkDate() throws IOException, InterruptedException {
+
+	public int checkDate(int headsupCount) throws IOException, InterruptedException {
 		boolean flag = false;
 		int difference = 0;
+		int i = headsupCount / 24;
 		LocalDate date = LocalDate.now();
 		int date1 = date.getDayOfMonth();
-		if(date1 >= 25) {
+		if (date1 + i >= 25) {
 			difference = 31 - date1;
-			flag = waitElementByXPath(RentPageLocators.NEXT_MONTH_BTN);
-			if(flag)
-				tapElementByXPath(RentPageLocators.NEXT_MONTH_BTN);
-			Thread.sleep(5000);
-			refreshPage();
+			difference++;
+			if ((difference) > 0) {
+				Thread.sleep(5000);
+				refreshPage();
+				Thread.sleep(5000);
+				tapByCoordinates(0, 0);
+				flag = waitElementByXPath(RentPageLocators.NEXT_MONTH_BTN);
+				if (flag)
+					tapElementByXPath(RentPageLocators.NEXT_MONTH_BTN);
+				Thread.sleep(5000);
+				refreshPage();
+			}
 		}
 		return difference;
 	}
@@ -466,21 +554,22 @@ public class AppiumDriverBase {
 	 * 
 	 * @param path
 	 * @param i    - nth element
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public String getModifiedDatePath(String path, int i, boolean flag) throws IOException {
+	public String getModifiedDatePath(String path, int i, boolean flag, Integer headsupCount) throws IOException {
 		LocalDate date = LocalDate.now();
 		String newPath = null;
 		String month = null;
-		int date1 = date.plusDays(i + 1).getDayOfMonth();
-		String day = date.plusDays(i + 1).getDayOfWeek().toString();
-		if(flag)
+		int j = headsupCount / 24;
+		int date1 = date.plusDays(i + j).getDayOfMonth();
+		String day = date.plusDays(i + j).getDayOfWeek().toString();
+		if (flag)
 			month = date.plusMonths(1).getMonth().toString();
 		else
 			month = date.getMonth().toString();
-		String formattedDate = WordUtils.capitalizeFully(day) + ", " + WordUtils.capitalizeFully(month) + " " + date1
-				+ " ";
+		formattedDate = WordUtils.capitalizeFully(day) + ", " + WordUtils.capitalizeFully(month) + " " + date1 + " ";
 		newPath = path + "'" + formattedDate + "']";
+		System.out.println(newPath);
 		return newPath;
 	}
 
@@ -508,6 +597,27 @@ public class AppiumDriverBase {
 	}
 
 	/**
+	 * Get attribute of an element by xpath
+	 * 
+	 * @param element
+	 * @param attribute
+	 */
+	public String getAttributeXPath(String element, String attribute) throws InterruptedException, IOException {
+		boolean flag = false;
+		String status = null;
+		try {
+			flag = waitElementByXPath(element);
+			Thread.sleep(5000);
+			if (flag)
+				status = driver.findElement(By.xpath(element)).getAttribute(attribute);
+		} catch (Exception e) {
+			Reporter.log("Unable to get the attribute for the element: " + element);
+			getScreenshot("Get_Time");
+		}
+		return status;
+	}
+
+	/**
 	 * Get the modified time path(xpath)
 	 * 
 	 * @param status
@@ -519,15 +629,36 @@ public class AppiumDriverBase {
 			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			Calendar cal = Calendar.getInstance();
 			String[] currentTime = dateFormat.format(cal.getTime()).split(":");
-			//int hour = Integer.parseInt(currentTime[0]);
-			if (status.equals("sameDay") && validateDate.equals("startdate")) {
-				time = "09:00 am']";
+			int hour = Integer.parseInt(currentTime[0]);
+			String hourSTR = null;
+			if (hour > 12) {
+				hour = hour - 12;
+				++hour;
+				if (validateDate.equals("enddate"))
+					hour = hour + 2;
+				if (hour < 10)
+					hourSTR = "0" + hour;
+				else
+					hourSTR = "" + hour;
+				System.out.println(hourSTR);
+				if (status.equals("sameDay") && validateDate.equals("startdate"))
+					time = hourSTR + ":00 pm']";
+				else if (status.equals("sameDay") && validateDate.equals("enddate"))
+					time = hourSTR + ":00 pm']";
+				else if (status.equals("nextDay") && validateDate.equals("startdate"))
+					time = hourSTR + ":00 pm']";
+				else if (status.equals("nextDay") && validateDate.equals("enddate"))
+					time = hourSTR + ":00 pm']";
+			} else {
+				if (status.equals("sameDay") && validateDate.equals("startdate"))
+					time = "12:00 pm']";
+				else if (status.equals("sameDay") && validateDate.equals("enddate"))
+					time = "02:00 pm']";
+				else if (status.equals("nextDay") && validateDate.equals("startdate"))
+					time = "02:00 pm']";
+				else if (status.equals("nextDay") && validateDate.equals("enddate"))
+					time = "02:00 pm']";
 			}
-			else if (status.equals("sameDay") && validateDate.equals("enddate")) {
-				time = "11:00 am']";
-			}
-			else if(status.equals("nextDay"))
-				time = "11:00 am']";
 		} catch (Exception e) {
 			Reporter.log("Unable to get the time");
 			getScreenshot("Get_Time");
@@ -540,12 +671,18 @@ public class AppiumDriverBase {
 	 * 
 	 * @param path
 	 */
-	public void clickFollowingSibling(String path) {
+	public boolean clickFollowingSibling(String path) {
+		boolean flag = false;
 		try {
-			driver.findElement(By.xpath(path + "/following-sibling::*")).click();
+			flag = waitElementByXPath(path + "/following-sibling::*");
+			if (flag) {
+				Thread.sleep(1500);
+				driver.findElement(By.xpath(path + "/following-sibling::*")).click();
+			}
 		} catch (Exception e) {
 			Reporter.log("Unable to click the next element: " + path);
 		}
+		return flag;
 	}
 
 	/**
@@ -574,7 +711,7 @@ public class AppiumDriverBase {
 			getScreenshot(locator);
 		}
 	}
-	
+
 	/**
 	 * Scroll Down With the value
 	 * 
@@ -586,19 +723,19 @@ public class AppiumDriverBase {
 		try {
 			PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
 			Sequence dragNDrop = new Sequence(finger, 1);
-			dragNDrop.addAction(finger.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.viewport(),
-					x, y + 500));
+			dragNDrop.addAction(
+					finger.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.viewport(), x, y + 500));
 			dragNDrop.addAction(finger.createPointerDown(PointerInput.MouseButton.MIDDLE.asArg()));
-			dragNDrop.addAction(finger.createPointerMove(Duration.ofMillis(700), PointerInput.Origin.viewport(),
-					x, y / 2));
+			dragNDrop.addAction(
+					finger.createPointerMove(Duration.ofMillis(700), PointerInput.Origin.viewport(), x, y / 2));
 			dragNDrop.addAction(finger.createPointerUp(PointerInput.MouseButton.MIDDLE.asArg()));
 			driver.perform(Arrays.asList(dragNDrop));
 		} catch (Exception e) {
-			Reporter.log("Unable to scroll down by value" + x + ' '+ y);
+			Reporter.log("Unable to scroll down by value" + x + ' ' + y);
 			getScreenshot("ScrollByValue");
 		}
 	}
-	
+
 	/**
 	 * Scroll Up With the value
 	 * 
@@ -610,26 +747,37 @@ public class AppiumDriverBase {
 		try {
 			PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
 			Sequence dragNDrop = new Sequence(finger, 1);
-			dragNDrop.addAction(finger.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.viewport(),
-					x, y / 2));
+			dragNDrop.addAction(
+					finger.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.viewport(), x, y / 2));
 			dragNDrop.addAction(finger.createPointerDown(PointerInput.MouseButton.MIDDLE.asArg()));
-			dragNDrop.addAction(finger.createPointerMove(Duration.ofMillis(700), PointerInput.Origin.viewport(),
-					x, y + 500));
+			dragNDrop.addAction(
+					finger.createPointerMove(Duration.ofMillis(700), PointerInput.Origin.viewport(), x, y + 500));
 			dragNDrop.addAction(finger.createPointerUp(PointerInput.MouseButton.MIDDLE.asArg()));
 			driver.perform(Arrays.asList(dragNDrop));
 		} catch (Exception e) {
-			Reporter.log("Unable to scroll down by value" + x + ' '+ y);
+			Reporter.log("Unable to scroll down by value" + x + ' ' + y);
 			getScreenshot("ScrollByValue");
 		}
 	}
-	
+
 	/**
 	 * Print in TestNG report and in the console log
+	 * 
 	 * @param string
 	 */
 	public void log(String string) {
-		Reporter.log(string+"<br>");
+		Reporter.log(string + "<br>");
 		System.out.println(string);
+	}
+
+	/**
+	 * Get Dimension
+	 * 
+	 * @return resolution/dimension of the screen
+	 */
+	public Dimension getDimension() {
+		Dimension dimension = driver.manage().window().getSize();
+		return dimension;
 	}
 
 	/**
@@ -637,12 +785,13 @@ public class AppiumDriverBase {
 	 */
 	public void teardown() {
 		driver.quit();
-		
+
 	}
-	
+
 	/**
 	 * Stop the Apppium Server Session
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 */
 	public void stopServer() throws InterruptedException {
 		Runtime runtime = Runtime.getRuntime();

@@ -18,8 +18,12 @@ public class LoginPageLocators {
 	/** XPATH **/	public static final String LOGIN_BTN = "//android.widget.Button[@content-desc='mail login to my account ']";
 	/** XPATH **/	public static final String SEARCH_ICON = "//android.widget.Button[@content-desc='search ']";
 
-	// USERDETAILS:
+	/* USERDETAILS:
 	public static final String USERNAME = "jyang@ruckify.com";
 	public static final String PASSWORD = "10Brewhunters";
+	4242 4242 4242 4242
+any expiry date, any 3-digit ccv*/
 
+	public static final String USERNAME = "wahmed@ruckify.com";
+	public static final String PASSWORD = "10Brewhunters";
 }

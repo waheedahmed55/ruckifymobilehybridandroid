@@ -10,6 +10,8 @@ public class HomePageLocators {
 
 	/** XPATH **/	public static final String SEARCH_TXT	 	= "//android.webkit.WebView[@content-desc='Ruckify']/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View/android.view.View/android.view.View[2]/android.view.View/android.widget.EditText";
 	/** XPATH **/	public static final String MONITOR_NAME		= "//android.view.View[@content-desc='Acer led monitor screen - 21.5”']";
+	/** XPATH **/	public static final String FIRST_SEARCH_RESULT	= "//android.webkit.WebView[@content-desc='Ruckify']/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View[2]/android.view.View/android.view.View[2]";
+	/** XPATH **/	public static final String SECOND_SEARCH_RESULT	= "//android.webkit.WebView[@content-desc='Ruckify']/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View[2]/android.view.View/android.view.View[3]";
 	/** XPATH **/	public static final String POST_ITEM_BTN	= "//android.widget.Button[@content-desc='ruckify posting post item or space ']";
 	/** XPATH **/	public static final String MESSAGE_TAB 		= "//android.view.View[@resource-id='tab-t0-1']";
 	/** XPATH **/	public static final String SIGNIN_MSG_TAB 	= "//android.view.View[@content-desc='messages 2']";
@@ -32,7 +34,11 @@ public class HomePageLocators {
 	///** XPATH **/	public static final String HOME_TAB 		= "//android.view.View[@resource-id='tab-t0-0']";
 	/** XPATH **/	public static final String EDIT_PROFILE_BTN = "//android.view.View[@content-desc='edit & verify profile']";
 	
+	/** XPATH **/	public static final String CONFIRMED_TAB	= "//android.view.View[@resource-id='tab-t1-2']";
+	/** XPATH **/	public static final String CONFIRMED_TAB_FIRST_RESULT	= "//android.view.View[@content-desc='confirmed'])[2]/android.view.View/android.view.View/android.view.View/android.view.View[3]/android.view.View[3]/android.view.View/android.view.View/android.view.View/android.view.View[6]/android.widget.Image";
+	
+	
 	//Search Text
-	public static final String SEARCH_ITEM 						= "Monitor";
+	public static final String SEARCH_ITEM 						= "Monitor"; //""Goggles";
 	
 }

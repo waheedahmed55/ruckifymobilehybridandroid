@@ -48,9 +48,9 @@ public class FunctionalTest {
 	 * @throws InterruptedException
 	 * @throws IOException
 	 */
-	@Test(dependsOnMethods = "LoginAndroid")
+	@Test(dependsOnMethods = "VerifyLoginWithValidCredential")
 	public void VerifySearchAndRentForNextday() throws InterruptedException, IOException {
-		flag = uibasicfunctions.searchAProduct();
+		flag = uibasicfunctions.searchAProduct(false);
 		if (flag) {
 			flag = uibasicfunctions.rentAProduct("nextDay");
 			if (flag) {
@@ -68,6 +68,6 @@ public class FunctionalTest {
 	@AfterClass(alwaysRun = true)
 	public void teardown() throws InterruptedException {
 		appiumDB.teardown();
-		appiumDB.stopServer();
+		//appiumDB.stopServer();
 	}
 }
